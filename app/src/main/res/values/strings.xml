@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Changer</string>
+    <string name="conect_pc">连接电脑</string>
+    <string name="connect">连接电脑</string>
+    <string name="disconnect">断开连接</string>
+
+</resources>
