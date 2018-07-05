@@ -143,6 +143,7 @@ public class MainActivity extends Activity {
         }
     }
 
+
     protected void installIntentFilter() {
         IntentFilter intentFilter = new IntentFilter("android.intent.action.ACTION_SHUTDOWN");
         intentFilter.addAction("android.intent.action.ACTION_POWER_DISCONNECTED");
