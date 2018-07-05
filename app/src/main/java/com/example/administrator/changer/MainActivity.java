@@ -169,10 +169,10 @@ public class MainActivity extends Activity {
         mAsyncStorageHandler.post(new Runnable() {
             public void run() {
                 if (paramBoolean) {
-//                    mStorageManager.enableUsbMassStorage();
+                    mStorageManager.enableUsbMassStorage();
                     Log.e("tlh", "switchUsbMassStorage,enableUsbMassStorage:" + paramBoolean);
                 } else {
-//                    mStorageManager.disableUsbMassStorage();
+                    mStorageManager.disableUsbMassStorage();
                     Log.e("tlh", "switchUsbMassStorage,disableUsbMassStorage:" + paramBoolean);
                 }
             }
@@ -238,14 +238,6 @@ public class MainActivity extends Activity {
         }
     };
 
-    // 测试代码
-    int i;
-
-    public void test(View view) {
-        setBarettylevel(i++);
-        if (i > 10)
-            i = 0;
-    }
 
     private class MountOnClicListener implements View.OnClickListener {
 
