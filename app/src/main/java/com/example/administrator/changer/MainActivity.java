@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -17,11 +16,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.administrator.changer.callback.ImageCallBack;
 import com.example.administrator.changer.utils.FastAnimationUtils;
 import com.example.administrator.changer.utils.HideSystemUIUtils;
 import com.example.administrator.charger.R;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements ImageCallBack {
 
     private ImageView btnMount;
     private ImageView changerImage;
@@ -47,49 +47,12 @@ public class MainActivity extends Activity {
     private boolean mounted = false;
 
 
-    private FastAnimationUtils fastAnimationUtils;
-    private final int[] IMAGE_RESOURCES = {
-            R.mipmap.changer_01,
-            R.mipmap.changer_02,
-            R.mipmap.changer_03,
-            R.mipmap.changer_04,
-            R.mipmap.changer_05,
-            R.mipmap.changer_06,
-            R.mipmap.changer_07,
-            R.mipmap.changer_08,
-            R.mipmap.changer_09,
-            R.mipmap.changer_10,
-            R.mipmap.changer_11,
-            R.mipmap.changer_12,
-            R.mipmap.changer_13,
-            R.mipmap.changer_14,
-            R.mipmap.changer_15,
-            R.mipmap.changer_16,
-            R.mipmap.changer_17,
-            R.mipmap.changer_18,
-            R.mipmap.changer_19,
-            R.mipmap.changer_20,
-            R.mipmap.changer_21,
-            R.mipmap.changer_22,
-            R.mipmap.changer_23,
-            R.mipmap.changer_24,
-            R.mipmap.changer_25,
-            R.mipmap.changer_26,
-            R.mipmap.changer_27,
-            R.mipmap.changer_28,
-            R.mipmap.changer_29,
-            R.mipmap.changer_30,
-            R.mipmap.changer_31,
-            R.mipmap.changer_32,
-            R.mipmap.changer_33,
-            R.mipmap.changer_34,
-            R.mipmap.changer_35,
-            R.mipmap.changer_36,
-            R.mipmap.changer_37,
-            R.mipmap.changer_38
-    };
+    private MainActivityPresenter presenter;
 
+
+    private FastAnimationUtils fastAnimationUtils;
     private final int ANIMATION_INTERVAL = 100;
+
 
     private Handler mHandler = new Handler() {
         @Override
@@ -137,7 +100,7 @@ public class MainActivity extends Activity {
         if (mStorageManager == null) {
             mStorageManager = ((StorageManager) getSystemService(Context.STORAGE_SERVICE));
             if (mStorageManager == null) {
-                Log.e("charger", "Failed to get StorageManager");
+                Log.e("tlh", "Failed to get StorageManager");
             }
         }
         changerImage = findViewById(R.id.charageing_bg);
@@ -147,14 +110,13 @@ public class MainActivity extends Activity {
         baretty = findViewById(R.id.electric);
         baretty.setBackgroundResource(R.mipmap.battery);
         linearParams = (LinearLayout.LayoutParams) baretty.getLayoutParams();
-        fastAnimationUtils = FastAnimationUtils.getInstance(changerImage);
-        fastAnimationUtils.addAllFrames(IMAGE_RESOURCES, ANIMATION_INTERVAL);
+        presenter = new MainActivityPresenter(this);
+        presenter.getImageData();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        startAnimation(false);
         installIntentFilter();
     }
 
@@ -185,11 +147,6 @@ public class MainActivity extends Activity {
             changerImage.setImageDrawable(getResources().getDrawable(R.mipmap.changer_complete));
         } else {
             fastAnimationUtils.startAnimation();
-//            changerImage.setBackgroundResource(R.drawable.chargeing_animation);
-//            AnimationDrawable anim = (AnimationDrawable) changerImage.getBackground();
-//            if (anim.isRunning())
-//                return;
-//            anim.start();
         }
     }
 
@@ -233,10 +190,26 @@ public class MainActivity extends Activity {
             if (("android.intent.action.ACTION_SHUTDOWN".equals(action)) || (mountFlag)) {
                 mountFlag = false;
                 switchUsbMassStorage(false);
-                Log.i("Charger", "shutdown System...");
+                Log.i("tlh", "shutdown System...");
             }
         }
     };
+//测试代码
+//    int i;
+//
+//    public void test(View view) {
+//        setBarettylevel(i++);
+//        if (i > 10)
+//            i = 0;
+//
+//    }
+
+    @Override
+    public void setImageDatas(int[] imageDatas) {
+        fastAnimationUtils = FastAnimationUtils.getInstance(changerImage);
+        fastAnimationUtils.addAllFrames(imageDatas, ANIMATION_INTERVAL);
+        startAnimation(false);
+    }
 
 
     private class MountOnClicListener implements View.OnClickListener {
