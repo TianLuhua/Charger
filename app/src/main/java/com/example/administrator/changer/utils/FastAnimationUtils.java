@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.ImageView;
 
 import java.lang.ref.SoftReference;
@@ -77,6 +78,7 @@ public class FastAnimationUtils {
     private int mIndex;
     private boolean mShounldRun;
     private boolean mIsRuning;
+//    private SoftReference<ImageView> mSoftReferenceImageView;
     private SoftReference<ImageView> mSoftReferenceImageView;
     private Handler mHandler;
     private Bitmap mRecycleBitmap;
@@ -148,6 +150,7 @@ public class FastAnimationUtils {
 
         @Override
         public void run() {
+            Log.i("tlh", "0000000000");
             ImageView imageView = mSoftReferenceImageView.get();
             if (!mShounldRun || imageView == null) {
                 if (mOnAnimationStoppedListener != null)
@@ -156,10 +159,13 @@ public class FastAnimationUtils {
             }
             mIsRuning = true;
             if (imageView.isShown()) {
+                Log.i("tlh", "11111111111111");
                 AnimationFrame frame = getNext();
                 GetAnimaDrawableTask task = new GetAnimaDrawableTask(imageView);
                 task.execute(frame.getmResourceId());
                 mHandler.postDelayed(this, frame.getmDuration());
+            } else {
+                Log.i("tlh", "22222222222222");
             }
         }
     }
@@ -189,7 +195,7 @@ public class FastAnimationUtils {
 
         @Override
         protected void onPostExecute(Drawable drawable) {
-            if (drawable != null&&mIsRuning) mImageView.setImageDrawable(drawable);
+            if (drawable != null && mIsRuning) mImageView.setImageDrawable(drawable);
             if (mOnAnimationFrameChangedListener != null)
                 mOnAnimationFrameChangedListener.onAnimationFrameChanged(mIndex);
         }

@@ -16,17 +16,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.administrator.changer.callback.ImageCallBack;
 import com.example.administrator.changer.utils.FastAnimationUtils;
 import com.example.administrator.changer.utils.HideSystemUIUtils;
 import com.example.administrator.charger.R;
 
-public class MainActivity extends Activity implements ImageCallBack {
+public class MainActivity extends Activity {
 
     private ImageView btnMount;
     private ImageView changerImage;
-    private ImageView baretty;
 
+    private ImageView baretty;
 
     private LinearLayout.LayoutParams linearParams;
     private TextView baretty_level;
@@ -45,10 +44,6 @@ public class MainActivity extends Activity implements ImageCallBack {
 
     private boolean delayFlag = false;
     private boolean mounted = false;
-
-
-    private MainActivityPresenter presenter;
-
 
     private FastAnimationUtils fastAnimationUtils;
     private final int ANIMATION_INTERVAL = 100;
@@ -85,11 +80,53 @@ public class MainActivity extends Activity implements ImageCallBack {
         }
     };
 
+    private final int[] IMAGE_RESOURCES = {
+            R.mipmap.changer_01,
+            R.mipmap.changer_02,
+            R.mipmap.changer_03,
+            R.mipmap.changer_04,
+            R.mipmap.changer_05,
+            R.mipmap.changer_06,
+            R.mipmap.changer_07,
+            R.mipmap.changer_08,
+            R.mipmap.changer_09,
+            R.mipmap.changer_10,
+            R.mipmap.changer_11,
+            R.mipmap.changer_12,
+            R.mipmap.changer_13,
+            R.mipmap.changer_14,
+            R.mipmap.changer_15,
+            R.mipmap.changer_16,
+            R.mipmap.changer_17,
+            R.mipmap.changer_18,
+            R.mipmap.changer_19,
+            R.mipmap.changer_20,
+            R.mipmap.changer_21,
+            R.mipmap.changer_22,
+            R.mipmap.changer_23,
+            R.mipmap.changer_24,
+            R.mipmap.changer_25,
+            R.mipmap.changer_26,
+            R.mipmap.changer_27,
+            R.mipmap.changer_28,
+            R.mipmap.changer_29,
+            R.mipmap.changer_30,
+            R.mipmap.changer_31,
+            R.mipmap.changer_32,
+            R.mipmap.changer_33,
+            R.mipmap.changer_34,
+            R.mipmap.changer_35,
+            R.mipmap.changer_36,
+            R.mipmap.changer_37,
+            R.mipmap.changer_38
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         HideSystemUIUtils.hideSystemUI(this);
         setContentView(R.layout.activity);
+        Log.e("tlh", "onCreate");
         init();
     }
 
@@ -110,48 +147,35 @@ public class MainActivity extends Activity implements ImageCallBack {
         baretty = findViewById(R.id.electric);
         baretty.setBackgroundResource(R.mipmap.battery);
         linearParams = (LinearLayout.LayoutParams) baretty.getLayoutParams();
-        presenter = new MainActivityPresenter(this);
-        presenter.getImageData();
+        fastAnimationUtils = FastAnimationUtils.getInstance(changerImage);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        Log.e("tlh", "onResume");
         installIntentFilter();
+
+        fastAnimationUtils.addAllFrames(IMAGE_RESOURCES, ANIMATION_INTERVAL);
+        fastAnimationUtils.startAnimation();
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        Log.e("tlh", "onPause");
         unregisterReceiver(mReceiver);
     }
 
-
-    private void switchUsbMassStorage(final boolean paramBoolean) {
-        mAsyncStorageHandler.post(new Runnable() {
-            public void run() {
-                if (paramBoolean) {
-                    mStorageManager.enableUsbMassStorage();
-                    Log.e("tlh", "switchUsbMassStorage,enableUsbMassStorage:" + paramBoolean);
-                } else {
-                    mStorageManager.disableUsbMassStorage();
-                    Log.e("tlh", "switchUsbMassStorage,disableUsbMassStorage:" + paramBoolean);
-                }
-            }
-        });
-    }
-
-    private void startAnimation(boolean chargerComplete) {
-        if (chargerComplete) {
-            fastAnimationUtils.stopAnimation();
-            changerImage.setImageDrawable(getResources().getDrawable(R.mipmap.changer_complete));
-        } else {
-            fastAnimationUtils.startAnimation();
-        }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.e("tlh", "onDestroy");
     }
 
 
-    protected void installIntentFilter() {
+    private void installIntentFilter() {
         IntentFilter intentFilter = new IntentFilter("android.intent.action.ACTION_SHUTDOWN");
         intentFilter.addAction("android.intent.action.ACTION_POWER_DISCONNECTED");
         intentFilter.addAction("android.intent.action.BATTERY_CHANGED");
@@ -159,13 +183,52 @@ public class MainActivity extends Activity implements ImageCallBack {
         registerReceiver(mReceiver, intentFilter);
     }
 
+    private void switchUsbMassStorage(final boolean paramBoolean) {
+        mAsyncStorageHandler.post(new Runnable() {
+            public void run() {
+                if (paramBoolean) {
+//                    mStorageManager.enableUsbMassStorage();
+                    Log.e("tlh", "switchUsbMassStorage,enableUsbMassStorage:" + paramBoolean);
+                } else {
+//                    mStorageManager.disableUsbMassStorage();
+                    Log.e("tlh", "switchUsbMassStorage,disableUsbMassStorage:" + paramBoolean);
+                }
+            }
+        });
+    }
+
+
     private void setBarettylevel(int Level) {
-        if (Level <= 10) {
+        Log.e("tlh", "setBarettylevel:" + Level);
+        if (Level < 10) {
             linearParams.height = (Level * 29);
             baretty.setLayoutParams(linearParams);
         }
         startAnimation(Level >= 10);
     }
+
+    private void startAnimation(boolean chargerComplete) {
+        if (chargerComplete) {
+            Log.e("tlh", "充电完成");
+            fastAnimationUtils.stopAnimation();
+            changerImage.setImageDrawable(getResources().getDrawable(R.mipmap.changer_complete));
+        } else {
+            Log.e("tlh", "正在充电");
+            fastAnimationUtils.startAnimation();
+        }
+    }
+
+
+    //测试代码
+//    int i;
+//
+//    public void test(View view) {
+//        setBarettylevel(i++);
+//        if (i > 10)
+//            i = 0;
+//
+//    }
+
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
 
@@ -178,14 +241,14 @@ public class MainActivity extends Activity implements ImageCallBack {
                 mBatteryLevel = intent.getIntExtra("level", 10);
                 int i = intent.getIntExtra("status", -1);
                 if (i != -1) {
-                    Log.e("cao", "mBatteryLevel==" + mBatteryLevel);
+                    Log.e("tlh", "mBatteryLevel==" + mBatteryLevel);
                     setBarettylevel(mBatteryLevel / 10);
                     baretty_level.setText(mBatteryLevel + "%");
                 }
             }
 
             if ("android.intent.action.ACTION_POWER_DISCONNECTED".equals(action)) {
-                MainActivity.this.finish();
+              System.exit(0);
             }
             if (("android.intent.action.ACTION_SHUTDOWN".equals(action)) || (mountFlag)) {
                 mountFlag = false;
@@ -194,23 +257,6 @@ public class MainActivity extends Activity implements ImageCallBack {
             }
         }
     };
-//测试代码
-//    int i;
-//
-//    public void test(View view) {
-//        setBarettylevel(i++);
-//        if (i > 10)
-//            i = 0;
-//
-//    }
-
-    @Override
-    public void setImageDatas(int[] imageDatas) {
-        fastAnimationUtils = FastAnimationUtils.getInstance(changerImage);
-        fastAnimationUtils.addAllFrames(imageDatas, ANIMATION_INTERVAL);
-        startAnimation(false);
-    }
-
 
     private class MountOnClicListener implements View.OnClickListener {
 
