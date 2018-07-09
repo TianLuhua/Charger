@@ -142,6 +142,7 @@ public class MainActivity extends Activity {
         }
         changerImage = findViewById(R.id.charageing_bg);
         baretty_level = findViewById(R.id.baretty_level);
+        baretty_level.setVisibility(View.INVISIBLE);
         btnMount = findViewById(R.id.btnMount);
         btnMount.setOnClickListener(new MountOnClicListener(mHandler));
         baretty = findViewById(R.id.electric);
@@ -187,10 +188,10 @@ public class MainActivity extends Activity {
         mAsyncStorageHandler.post(new Runnable() {
             public void run() {
                 if (paramBoolean) {
-//                    mStorageManager.enableUsbMassStorage();
+                    mStorageManager.enableUsbMassStorage();
                     Log.e("tlh", "switchUsbMassStorage,enableUsbMassStorage:" + paramBoolean);
                 } else {
-//                    mStorageManager.disableUsbMassStorage();
+                    mStorageManager.disableUsbMassStorage();
                     Log.e("tlh", "switchUsbMassStorage,disableUsbMassStorage:" + paramBoolean);
                 }
             }
@@ -243,12 +244,13 @@ public class MainActivity extends Activity {
                 if (i != -1) {
                     Log.e("tlh", "mBatteryLevel==" + mBatteryLevel);
                     setBarettylevel(mBatteryLevel / 10);
-                    baretty_level.setText(mBatteryLevel + "%");
+                    if (baretty_level.isShown())
+                        baretty_level.setText(mBatteryLevel + "%");
                 }
             }
 
             if ("android.intent.action.ACTION_POWER_DISCONNECTED".equals(action)) {
-              System.exit(0);
+                System.exit(0);
             }
             if (("android.intent.action.ACTION_SHUTDOWN".equals(action)) || (mountFlag)) {
                 mountFlag = false;
@@ -257,6 +259,7 @@ public class MainActivity extends Activity {
             }
         }
     };
+
 
     private class MountOnClicListener implements View.OnClickListener {
 
