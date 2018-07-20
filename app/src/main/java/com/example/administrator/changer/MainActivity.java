@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -198,6 +199,11 @@ public class MainActivity extends Activity {
         });
     }
 
+    private void showConnectComputerButton(boolean isShow) {
+        if (btnMount == null) return;
+        btnMount.setVisibility(isShow ? View.VISIBLE : View.INVISIBLE);
+    }
+
 
     private void setBarettylevel(int Level) {
         Log.e("tlh", "setBarettylevel:" + Level);
@@ -257,6 +263,11 @@ public class MainActivity extends Activity {
                 switchUsbMassStorage(false);
                 Log.i("tlh", "shutdown System...");
             }
+
+            //何种方式充电
+            int chargePlug = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
+            Log.i("tlh", "chargePlug:" + chargePlug);
+            showConnectComputerButton(chargePlug == BatteryManager.BATTERY_PLUGGED_USB);
         }
     };
 
