@@ -1,2 +1,2 @@
 # Charger
-i6s+充电apk
+i6sc充电apk
